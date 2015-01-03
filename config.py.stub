@@ -1,0 +1,14 @@
+#!/usr/bin/python2
+
+# Twitter API Credentials
+consumer_key=''
+consumer_secret=''
+access_token_key=''
+access_token_secret=''
+
+# Twitter seach Terms
+terms = ["Mensadisplay", "@stratum0", '#ungestreamt']
+
+# TCP/IP Settings of print-Server
+ip_addr = '192.168.178.226'
+tcp_port = 9100
