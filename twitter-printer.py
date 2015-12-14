@@ -27,19 +27,19 @@ access_token_secret=config.access_token_secret
 
 
 # Prints a status st to a given socket s
-def pst(st,f):
+def pst(st):
 	h = HTMLParser.HTMLParser()
-	f.send(h.unescape("@"+st.user.name.encode('ascii', 'ignore'))+"\r\n")
-	f.send(str(st.created_at)+"\r\n")
-	f.send(st.text.encode('ascii', 'ignore')+"\r\n\r\n\r\n\r\n")
-	f.send("\x1dV\x01")	# Paper Cut
+	lpr(h.unescape("@"+st.user.name.encode('latin1', 'ignore'))+"\r\n")
+	lpr(str(st.created_at)+"\r\n")
+	lpr(st.text.encode('latin1', 'ignore')+"\r\n\r\n\r\n\r\n")
+	lpr("\x1dV\x01")	# Paper Cut
 
 # Searches twitter and prints all statuses, that are new
-def get(ids,term, api,f):
+def get(ids,term, api):
 	s = api.GetSearch(term)
 	for st in s:
 		if st.id not in ids:
-			pst(st,f)
+			pst(st)
 			ids.append(st.id)
 
 # Seaches twitter and marks all found tweets as old
@@ -47,6 +47,18 @@ def init(ids,term, api):
 	s = api.GetSearch(term)
 	for st in s:
 		ids.append(st.id)
+
+def lpr(s):
+	global sock 
+	global port
+
+	print s
+
+	if sock is not None:
+		sock.write(s)
+	
+	if port is not None:
+		port.write(s)
 
 
 api = twitter.Api(consumer_key, consumer_secret, access_token_key, access_token_secret)
@@ -63,12 +75,31 @@ print ""
 for t in terms:
 	init(ids, t, api)
 
+sock = None
+port = None
+
 while 1:
 	print "."
-	f = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	f.connect((config.ip_addr,config.tcp_port))
-	for t in terms:
-		get(ids, t, api,f)
-	f.close()
+	if hasattr(config, 'ip_addr'):
+		sock  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		sock.connect((config.ip_addr,config.tcp_port))
 
+	if hasattr(config, 'lpr'):
+		port = open(config.lpr, 'w')
+
+	if sock is None and port is None:
+		break
+
+	print sock, port
+
+
+	for t in terms:
+		get(ids, t, api)
+
+	if sock is not None:
+		sock.close()
+
+	if port is not None:
+		port.close()
+	
 	time.sleep(20)

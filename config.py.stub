@@ -12,3 +12,8 @@ terms = ["Mensadisplay", "@stratum0", '#ungestreamt']
 # TCP/IP Settings of print-Server
 ip_addr = '192.168.178.226'
 tcp_port = 9100
+
+# path of lpr
+lpr = '/dev/usb/lp0'
+
+
