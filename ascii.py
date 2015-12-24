@@ -3,6 +3,7 @@
 from PIL import Image
 import random
 from bisect import bisect
+import argparse
 
 def ascii(path, xs):
 	greyscale = [
@@ -20,10 +21,7 @@ def ascii(path, xs):
 
 	im = Image.open(path)
 	s = im.size
-	print "x-Orgig:" + str(s[0])
-	print "x-Soll: " + str(xs)
-	ys = int((float(xs)/s[0])*s[1])
-	print "y-Soll: " + str(ys)
+	ys = int((float(xs)/s[0])*s[1]*0.5)
 	im = im.resize((xs, ys), Image.BILINEAR)
 	im = im.convert("L")
 
@@ -38,4 +36,11 @@ def ascii(path, xs):
 
 	print st
 
+parser = argparse.ArgumentParser(description='Fits an image with ASCII-chars')
+parser.add_argument('file', help='Image to load')
+parser.add_argument('width', help='Image with to create')
 
+args = parser.parse_args()
+
+
+ascii(args.file, int(args.width))
