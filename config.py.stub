@@ -16,4 +16,11 @@ tcp_port = 9100
 # path of lpr
 lpr = '/dev/usb/lp0'
 
+# ads 
+# all files in this dir will be treated as ads and be randomly chosen.
+ads = './ads/'
+# ads will be inserted every n tweets
+adsn = 5
+# ast least one ad will be inserted every cycle
+forceadd = True
 

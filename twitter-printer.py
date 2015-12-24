@@ -80,13 +80,14 @@ port = None
 
 
 while 1:
-    #reload ad        
+    #reload ads
     ads = []
-    for file in os.listdir("./ads/"):
+    for file in os.listdir(config.ads):
         with open('./ads/'+file, 'r') as f:
             ads.append(f.read())
             f.close()
 
+    # open sockets
     if hasattr(config, 'ip_addr'):
         sock  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect((config.ip_addr,config.tcp_port))
@@ -95,19 +96,23 @@ while 1:
         port = open(config.lpr, 'w')
 
     if sock is None and port is None:
-        break
-
-    i = 0
+        print "No output enabled. This is ok, but may not what you wanted. Just printing everything to screen."
+    
+    #output
+    if config.forceadd:
+        i = 0
     for t in terms:
-        if (i % 5) == 0:
+        if (i % config.adsn) == 0:
             lpr(random.choice(ads) +"\r\n\r\n\r\n\r\n\x1dV\x01")
         i = i + 1
         get(ids, t, api)
 
+    #cleanup
     if sock is not None:
         sock.close()
 
     if port is not None:
         port.close()
     
+    # zZzZz
     time.sleep(20)
