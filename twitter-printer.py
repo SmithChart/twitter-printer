@@ -17,6 +17,7 @@ import HTMLParser
 import os
 import config
 import socket
+import random
 
 
 # Make some stuff to fetch config
@@ -65,7 +66,6 @@ api = twitter.Api(consumer_key, consumer_secret, access_token_key, access_token_
 
 ids = []
 
-#terms = ["mensadisplay", "stratum0", "#ungestreamt"]
 terms = config.terms
 
 print "Twitter that shit!"
@@ -78,28 +78,36 @@ for t in terms:
 sock = None
 port = None
 
+
 while 1:
-	print "."
-	if hasattr(config, 'ip_addr'):
-		sock  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		sock.connect((config.ip_addr,config.tcp_port))
+    #reload ad        
+    ads = []
+    for file in os.listdir("./ads/"):
+        with open('./ads/'+file, 'r') as f:
+            ads.append(f.read())
+            f.close()
 
-	if hasattr(config, 'lpr'):
-		port = open(config.lpr, 'w')
+    if hasattr(config, 'ip_addr'):
+        sock  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect((config.ip_addr,config.tcp_port))
 
-	if sock is None and port is None:
-		break
+    if hasattr(config, 'lpr'):
+        port = open(config.lpr, 'w')
 
-	print sock, port
+    if sock is None and port is None:
+        break
 
+    i = 0
+    for t in terms:
+        if (i % 5) == 0:
+            lpr(random.choice(ads) +"\r\n\r\n\r\n\r\n\x1dV\x01")
+        i = i + 1
+        get(ids, t, api)
 
-	for t in terms:
-		get(ids, t, api)
+    if sock is not None:
+        sock.close()
 
-	if sock is not None:
-		sock.close()
-
-	if port is not None:
-		port.close()
-	
-	time.sleep(20)
+    if port is not None:
+        port.close()
+    
+    time.sleep(20)
