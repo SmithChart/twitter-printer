@@ -30,14 +30,14 @@ access_token_secret=config.access_token_secret
 # Prints a status st to a given socket s
 def pst(st):
 	h = HTMLParser.HTMLParser()
-	lpr(h.unescape("@"+st.user.name.encode('latin1', 'ignore'))+"\r\n")
+	lpr(h.unescape("@"+st.user.screen_name.encode('latin1', 'ignore'))+"\r\n")
 	lpr(str(st.created_at)+"\r\n")
 	lpr(st.text.encode('latin1', 'ignore')+"\r\n\r\n\r\n\r\n")
 	lpr("\x1dV\x01")	# Paper Cut
 
 # Searches twitter and prints all statuses, that are new
 def get(ids,term, api):
-	s = api.GetSearch(term)
+	s = api.GetSearch(term +" -RT")
 	for st in s:
 		if st.id not in ids:
 			pst(st)
@@ -52,8 +52,11 @@ def init(ids,term, api):
 def lpr(s):
 	global sock 
 	global port
+        global numtweets
 
 	print s
+        
+        numtweets = numtweets + 1 
 
 	if sock is not None:
 		sock.write(s)
@@ -78,41 +81,54 @@ for t in terms:
 sock = None
 port = None
 
+i = 0
+
+numtweets = 0
+
+counttostat = 0
 
 while 1:
-    #reload ads
-    ads = []
-    for file in os.listdir(config.ads):
-        with open('./ads/'+file, 'r') as f:
-            ads.append(f.read())
-            f.close()
+    try:
+        #reload ads
+        ads = []
+        for file in os.listdir(config.ads):
+            with open('./ads/'+file, 'r') as f:
+                ads.append(f.read())
+                f.close()
 
-    # open sockets
-    if hasattr(config, 'ip_addr'):
-        sock  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect((config.ip_addr,config.tcp_port))
+        # open sockets
+        if hasattr(config, 'ip_addr'):
+            sock  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.connect((config.ip_addr,config.tcp_port))
 
-    if hasattr(config, 'lpr'):
-        port = open(config.lpr, 'w')
+        if hasattr(config, 'lpr'):
+            port = open(config.lpr, 'w')
 
-    if sock is None and port is None:
-        print "No output enabled. This is ok, but may not what you wanted. Just printing everything to screen."
-    
-    #output
-    if config.forceadd:
-        i = 0
-    for t in terms:
-        if (i % config.adsn) == 0:
-            lpr(random.choice(ads) +"\r\n\r\n\r\n\r\n\x1dV\x01")
-        i = i + 1
-        get(ids, t, api)
+        if sock is None and port is None:
+            print "No output enabled. This is ok, but may not what you wanted. Just printing everything to screen."
+        
+        #output
+        if config.forceadd:
+            i = 0
+        for t in terms:
+            if (i % config.adsn) == 0:
+                lpr(random.choice(ads) +"\r\n\r\n\r\n\r\n\x1dV\x01")
+            i = i + 1
+            get(ids, t, api)
 
-    #cleanup
-    if sock is not None:
-        sock.close()
 
-    if port is not None:
-        port.close()
-    
-    # zZzZz
-    time.sleep(20)
+        #cleanup
+        if sock is not None:
+            sock.close()
+
+        if port is not None:
+            port.close()
+        
+        # zZzZz
+        time.sleep(20)
+    except Exception as e:
+        print("Whoops :o")
+        print(e)
+
+
+
