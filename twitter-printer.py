@@ -38,7 +38,7 @@ def pst(st):
 	lpr(str(st.created_at)+"\r\n")
 	lpr(st.text.encode('latin1', 'ignore')+"\r\n\r\n\r\n\r\n")
         if config.wurstEnable:
-            if "#freiwurst" in st.text:
+            if config.wurstKeyword.lower() in st.text.lower():
                 if (float(time.time()) - lastWurst) > config.wurstTimeout:
                     lpr("Here is your free wurstcher:\r\n")
                     code = int(wurst.getEan(1))
@@ -109,7 +109,7 @@ if config.wurstEnable:
     # prepare the freiwurstClient
     wurst = wurstApiClient.DbClient("twitterprinter", config.wurstDbHost) 
     wurst.addPubMethod(config.wurstPubMethod)
-    lastWurst = float(time.time())
+    lastWurst = float(time.time())-config.wurstTimeout*2
 
 while 1:
     try:
@@ -153,6 +153,7 @@ while 1:
     except Exception as e:
         print("Whoops :o")
         print(e)
+        time.sleep(5)
 
 
 
