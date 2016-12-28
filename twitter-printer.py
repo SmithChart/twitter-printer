@@ -18,6 +18,8 @@ import os
 import config
 import socket
 import random
+if config.wurstEnable:
+    import wurstApiClient
 
 
 # Make some stuff to fetch config
@@ -29,10 +31,24 @@ access_token_secret=config.access_token_secret
 
 # Prints a status st to a given socket s
 def pst(st):
+        global wurst
+        global lastWurst
 	h = HTMLParser.HTMLParser()
 	lpr(h.unescape("@"+st.user.screen_name.encode('latin1', 'ignore'))+"\r\n")
 	lpr(str(st.created_at)+"\r\n")
 	lpr(st.text.encode('latin1', 'ignore')+"\r\n\r\n\r\n\r\n")
+        if config.wurstEnable:
+            if "#freiwurst" in st.text:
+                if (float(time.time()) - lastWurst) > config.wurstTimeout:
+                    lpr("Here is your free wurstcher:\r\n")
+                    code = int(wurst.getEan(1))
+                    lpr("\x1D\x6B\x00{:011}\x00".format(code))
+                    lpr("\r\nGo to Freiwurst to obtain your free Wurst")
+                    lpr("\r\n\r\n\r\n\r\n")
+                    lastWurst = float(time.time())
+                else:
+                    lpr("Sorry you can only generate one wurtcher every minute :(\r\n")
+                    lpr("\r\n\r\n\r\n\r\n")
 	lpr("\x1dV\x01")	# Paper Cut
 
 # Searches twitter and prints all statuses, that are new
@@ -63,6 +79,7 @@ def lpr(s):
 	
 	if port is not None:
 		port.write(s)
+                time.sleep(0.1) # TODO: fix tis later
 
 
 api = twitter.Api(consumer_key, consumer_secret, access_token_key, access_token_secret)
@@ -86,6 +103,13 @@ i = 0
 numtweets = 0
 
 counttostat = 0
+
+
+if config.wurstEnable:
+    # prepare the freiwurstClient
+    wurst = wurstApiClient.DbClient("twitterprinter", config.wurstDbHost) 
+    wurst.addPubMethod(config.wurstPubMethod)
+    lastWurst = float(time.time())
 
 while 1:
     try:
