@@ -7,7 +7,7 @@ access_token_key='604747216-XZjAPAoGoeHb1caGnanFWwR2HQLCpeoTGzlsBzFC'
 access_token_secret='F8Mxi8NbHoqjJ4FezeejLq5HkRkPSvPff5yGIbJYWPNDb'
 
 # Twitter seach Terms
-terms = ["Mensadisplay", "@stratum0", '33c3','33c3ctf', 'freiwurst']
+terms = ["#DudW", "Sonntag", "ist"]
 
 # TCP/IP Settings of print-Server
 #ip_addr = '192.168.178.226'
@@ -27,7 +27,7 @@ forceadd = False
 
 #wurstcher Config
 #this enanbles you to print wurstchers \o/
-wurstEnable = True # activate this to activate wurstSupport
+wurstEnable = False# activate this to activate wurstSupport
 wurstDbHost = "http://151.217.83.30:5000"
 wurstPubMethod = "twitterprinter"
 wurstTimeout = 60.0 # minimum time between two wurstchers in [s]
