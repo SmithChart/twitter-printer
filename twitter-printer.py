@@ -151,9 +151,6 @@ while 1:
         # zZzZz
         time.sleep(20)
     except Exception as e:
-        print("Whoops :o")
-        print(e)
-        time.sleep(5)
-
+        raise e
 
 
