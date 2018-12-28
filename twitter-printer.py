@@ -75,7 +75,7 @@ def lpr(s):
         numtweets = numtweets + 1 
 
 	if sock is not None:
-		sock.write(s)
+		sock.send(s)
 	
 	if port is not None:
 		port.write(s)
