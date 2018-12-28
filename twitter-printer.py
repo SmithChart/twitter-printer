@@ -111,46 +111,44 @@ if config.wurstEnable:
     wurst.addPubMethod(config.wurstPubMethod)
     lastWurst = float(time.time())-config.wurstTimeout*2
 
-while 1:
-    try:
-        #reload ads
-        ads = []
-        for file in os.listdir(config.ads):
-            with open('./ads/'+file, 'r') as f:
-                ads.append(f.read())
-                f.close()
+while True:
+    #reload ads
+    ads = []
+    adsdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), config.ads)
+    for file in os.listdir(adsdir):
+        with open(os.path.join(adsdir, file), 'r') as f:
+            ads.append(f.read())
+            f.close()
 
-        # open sockets
-        if hasattr(config, 'ip_addr'):
-            sock  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.connect((config.ip_addr,config.tcp_port))
+    # open sockets
+    if hasattr(config, 'ip_addr'):
+        sock  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect((config.ip_addr,config.tcp_port))
 
-        if hasattr(config, 'lpr'):
-            port = open(config.lpr, 'w')
+    if hasattr(config, 'lpr'):
+        port = open(config.lpr, 'w')
 
-        if sock is None and port is None:
-            print "No output enabled. This is ok, but may not what you wanted. Just printing everything to screen."
-        
-        #output
-        if config.forceadd:
-            i = 0
-        for t in terms:
-            if (i % config.adsn) == 0:
-                lpr(random.choice(ads) +"\r\n\r\n\r\n\r\n\x1dV\x01")
-            i = i + 1
-            get(ids, t, api)
+    if sock is None and port is None:
+        print "No output enabled. This is ok, but may not what you wanted. Just printing everything to screen."
+    
+    #output
+    if config.forceadd:
+        i = 0
+    for t in terms:
+        if (i % config.adsn) == 0:
+            lpr(random.choice(ads) +"\r\n\r\n\r\n\r\n\x1dV\x01")
+        i = i + 1
+        get(ids, t, api)
 
 
-        #cleanup
-        if sock is not None:
-            sock.close()
+    #cleanup
+    if sock is not None:
+        sock.close()
 
-        if port is not None:
-            port.close()
-        
-        # zZzZz
-        time.sleep(20)
-    except Exception as e:
-        raise e
+    if port is not None:
+        port.close()
+    
+    # zZzZz
+    time.sleep(20)
 
 
