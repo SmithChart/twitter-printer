@@ -7,19 +7,19 @@ access_token_key='604747216-XZjAPAoGoeHb1caGnanFWwR2HQLCpeoTGzlsBzFC'
 access_token_secret='F8Mxi8NbHoqjJ4FezeejLq5HkRkPSvPff5yGIbJYWPNDb'
 
 # Twitter seach Terms
-terms = ["#DudW", "Sonntag", "ist"]
+terms = ["#35c3", "Stratum0"]
 
 # TCP/IP Settings of print-Server
-#ip_addr = '192.168.178.226'
-#tcp_port = 9100
+ip_addr = '10.0.0.9'
+tcp_port = 9100
 
 # path of lpr
-lpr = '/dev/lp0'
+#lpr = '/dev/lp0'
 
 
 # ads 
 # all files in this dir will be treated as ads and be randomly chosen.
-ads = './ads/'
+ads = 'ads/'
 # ads will be inserted every n tweets
 adsn = 20
 # ast least one ad will be inserted every cycle
@@ -27,9 +27,9 @@ forceadd = False
 
 #wurstcher Config
 #this enanbles you to print wurstchers \o/
-wurstEnable = False# activate this to activate wurstSupport
-wurstDbHost = "http://151.217.83.30:5000"
+wurstEnable = True# activate this to activate wurstSupport
+wurstDbHost = "http://151.217.22.64:5000"
 wurstPubMethod = "twitterprinter"
-wurstTimeout = 60.0 # minimum time between two wurstchers in [s]
+wurstTimeout = 30.0 # minimum time between two wurstchers in [s]
 wurstKeyword = "freiwurst"
 
