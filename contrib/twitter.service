@@ -1,0 +1,9 @@
+[Unit]
+Description=Twitter Printer
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python2 /root/printer/twitter-printer/twitter-printer.py
+
+[Install]
+WantedBy=multi-user.target
